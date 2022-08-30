@@ -1,0 +1,3 @@
+# Minicore
+
+> An awesome project.
