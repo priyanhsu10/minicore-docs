@@ -24,7 +24,7 @@
 
 > comminig soon ..
 
-### Setuing up Pipeline
+### Setting up Pipeline
 
 > comminig soon ..
 
@@ -64,7 +64,7 @@
 
 > comminig soon ..
 
-### Route Contraints
+#### Route Contraints
 
 > comminig soon ..
 
