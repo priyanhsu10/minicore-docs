@@ -206,7 +206,38 @@ public class HelloController  extends ControllerBase {
 
 ### Depenndecy Injection
 
-> comminig soon ..
+> Micore proved the the following depencency type to be register 
+1. Singleton
+2. RequestScope
+3. Transient
+
+> IServiceCollection  interface is provide the functionality to resole the and register the types to IOC container ..
+```
+
+public class AppStartup implements IStartup {
+
+    //Register your service with IOC Container
+   
+    @Override
+    public void configureServices(IServiceCollection service) {
+       
+        //Resigter your dependencies with the IOC Container like below
+        service.addSingleton(ITestService.class, TestService.class);
+
+
+    }
+
+.....
+
+Use the dependencies 
+public class HelloController  extends ControllerBase {
+    private ITestService testService;
+
+    public HelloController(ITestService testService) { ---> Inject Dependency using Contructor Injection 
+        this.testService = testService;
+    }
+
+```
 
 ### Middleware
 
@@ -215,11 +246,57 @@ public class HelloController  extends ControllerBase {
 
 ### Routing
 
-> comminig soon ..
+> Http Route Annotations
+1. @Route
+2. @Get
+3. @Put
+4. @Post
+5. @Delete
 
 #### Model Binding
 
-> comminig soon ..
+> Model binding can be perform in using following annotations
+
+1. @FromBody
+2. @FromForm
+3. @FromRoute
+4. @FromQuery
+
+> custom Model biding Model
+
+```
+@Post(path = "/m2")
+    //Custom ModelBiding
+    public Model post( Model2 model){
+        return model.getModel();
+    }
+....
+
+//Custom ModelBiding
+public class Model2 {
+   
+    //value bind from header
+    @FromHeader(Key = "Authorization")
+    private String token;
+
+   //value bind from Query
+    @FromQurey
+    private String name;
+
+    //value bind from Route
+    @FromRoute
+    private String id;
+
+    //value bind from Body
+    @FromBody
+    private Model model;
+
+    ....
+    setter getter
+
+}
+
+```
 
 #### Route Contraints
 
