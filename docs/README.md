@@ -25,7 +25,7 @@
 
 > [GitHub Repositoy](https://github.com/priyanhsu10/minicore).
 
-## Get started
+## Minicore Architecture flow
 
 > comminig soon ..
 > ![The San Juan Mountains are beautiful!](/assets/Arcflow.png "Archeture diamgram")
@@ -37,7 +37,20 @@
 public class Program {
     public static void main(String[] args) {
        WebHostBuilder.build(args)
+               //configure custom properties
+               .ConfigureHost(option->{
+                //add your custom property file
+
+//                       option.addPropertyFile("CustomFile.properties");
+                           //add your custom json file
+//                       option.addJsonFile("CustomjsonFile.json");
+                        
+                        //add your custom xml file
+//                       option.addXmlFile("CustomxmlFile.xml");
+               })
+
                .useStartup(AppStartup.class)
+
                .run();
     }
 }
@@ -188,9 +201,8 @@ public class HelloController  extends ControllerBase {
 
 > comminig soon ..
 
-### Actions
-
 > comminig soon ..
+
 
 ## Turotials
 
@@ -204,6 +216,46 @@ public class HelloController  extends ControllerBase {
 
 > comminig soon ..
 
+### Application configuration 
+
+> Minicore can pick the configuration in following order
+1. app.properties
+2. app.{profile}.properties
+3. custom property configuration provider
+4. Envronment variables entries
+5.Command line Aguments -m_{propertykey}=value
+
+```
+public class Program {
+    public static void main(String[] args) {
+       WebHostBuilder.build(args)
+               //configure custom properties
+               .ConfigureHost(option->{
+                //add your custom property file
+
+//                       option.addPropertyFile("CustomFile.properties");
+                           //add your custom json file
+//                       option.addJsonFile("CustomjsonFile.json");
+                        
+                        //add your custom xml file
+//                       option.addXmlFile("CustomxmlFile.xml");
+                        options.custom(()->{
+                                    Map<Object,Object> customProperties= new HashMap<>();
+                                    //custom keys 
+                                    ....
+                                    return customProperties;
+
+
+                          }));
+
+               })
+
+               .useStartup(AppStartup.class)
+
+               .run();
+    }
+}
+```
 ### Depenndecy Injection
 
 > Micore proved the the following depencency type to be register 
