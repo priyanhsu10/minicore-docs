@@ -560,6 +560,7 @@ We can appply the Result Filter at global level and Action Level
 1. Global level 
 Global result fitler will excecute for every action 
 We can register the Custom Result filter with MvcConfigurer using options.addResultFilter() 
+
 ```
 
 public class AppStartup implements IStartup {
@@ -597,6 +598,7 @@ You can apply Result fitler for specific action using @ResultFilter
         return this.testService.getlist();
 
     }
+
 ```
 
 
