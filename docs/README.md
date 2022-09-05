@@ -28,7 +28,7 @@
 ## Minicore Architecture flow
 
 > comminig soon ..
-> ![The San Juan Mountains are beautiful!](/assets/arcflow.png "Archeture diamgram")
+> ![The San Juan Mountains are beautiful!](/assets/Arcflow.png "Archeture diamgram")
 
 ### Program Class
 
