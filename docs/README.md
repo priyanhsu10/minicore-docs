@@ -42,11 +42,14 @@ public class Program {
                 //add your custom property file
 
 //                       option.addPropertyFile("CustomFile.properties");
-                           //add your custom json file
+
+------------------------*-Need to be implemented-----*--------------
+                           //add your custom json file 
 //                       option.addJsonFile("CustomjsonFile.json");
                         
                         //add your custom xml file
 //                       option.addXmlFile("CustomxmlFile.xml");
+------------------------*-Need to be implemented------*-------------
                })
 
                .useStartup(AppStartup.class)
@@ -356,9 +359,249 @@ public class Model2 {
 
 ### Filters
 
-> comminig soon ..
+
+> Filters allow to run the code at veriaus stage  
+
+> Minicor provide  4 types of filters
+
+1. Authorization filter [need to be impletemented]
+2. Action Filter 
+3. Exception Filter
+4. Result Filter
+
+#### Authorization filter [need to be impletemented]
+ 
+ coming soon ...
+
+ #### Action Filter
+
+ Action filters allow to run the code before and after action execute
+ Action filter can be define by impletementing the IAcitonFilter Interface  
+
+ Execution of Pipeline can be short circuited if you set the result field
+
+ ```
+ public class TestActionFilter implements IActionFilter {
+
+    //execute method before action call
+    @Override
+    public void beforeExecute(HttpContext httpContext) {
+        //contain the action parameters that you can change
+        // httpContext.ActionContext.MethodParameters
+        System.out.println("TestActionFilter :beforeExecute");
+
+          //for short-circuiting pipe set action result value
+           //httpContext.ActionContext.ActionResult
+        // example httpContext.ActionContext.ActionResult= new NotFoundResult();
+
+
+
+    }
+
+    @Override
+    public void afterExecute(HttpContext httpContext) {
+        //perform any logic after action execution
+        // here Action result will be present
+        System.out.println("TestActionFilter :afterExecute");
+    }
+}
+...
+
+```
+
+We can configure the Filter on Three level
+
+1. Global Level Action Filter
+
+Global filter will excetute against every action .
+Global filter can be register in the Startup class ConfigureServices method
+
+```
+
+public class AppStartup implements IStartup {
+
+    //Register your service with IOC Container
+   
+    @Override
+    public void configureServices(IServiceCollection service) {
+       
+        //configuring mvc options
+        MvcConfigurer.configureMvc(service,options->{
+
+            // Adding your custom  Global  filters
+            options.addGlobalFilter(TestGlobalActionFilter.class);
+            .....
+
+        });
+        
+        }
+  ...
+
+    }
+```
+
+2. Controller Level  Action Fitler 
+
+Controller level Action filter can be apply using @ActionFilter Annotation on controller class and provide the your custom filter
+like @ActionFilter(filterClass = TestActionFilter2.class)
+
+Filter will be excecute on every action of controller class
+
+```
+@Route(path = "/hello") --> @Route Annoation setut the base route for Controller
+@ActionFilter(filterClass = TestActionFilter2.class) ---> Controller Level Action filter . this is exectuted On every action execution in the controller
+public class HelloController  extends ControllerBase {
+    private ITestService testService;
+
+    public HelloController(ITestService testService) { ---> Inject Dependency using Contructor Injection 
+        this.testService = testService;
+    }
+....
+```
+
+
+
+3. Action Level Action Filter 
+
+Action Level Filter can ye use same as contoller level filter . we have to apply the annotation on Action in place of Controller class
+
+You can apply multiple filter as well the order of execution as per you apply 
+```
+@Get       //-->  Using @Get attribute can specify Get Method 
+    @ActionFilter(filterClass = TestActionFilter.class) --> //apply custom filter for specific action
+   
+    public List<Model> get() {
+        //accesing transaiton id which is added by transactionIdMiddlware
+        System.out.println(httpContext.getData().get("trazId"));
+        return this.testService.getlist();
+
+    }
+```
+#### Exception Filter
+ 
+ Exception Filter allow to handle the the custom exception which will throw from the action method 
+
+ We can define the our custom ExceptionFilter by implementing the IExceptionFilter interface 
+
+ IExceptionFilter fitler have 2 Methods 
+ 1. boolean support(..) 
+
+    This method decide the elegibility of ExcptionFilter for thrown exception.
+ 2.  onException(..)
+   This method can give the control to you to  handle the exception 
+
+
+ ```
+ public class TestExceptionFilter implements IExceptionFilter {
+    @Override
+    public boolean support(Class<? extends RuntimeException> excetpions) {
+        //from list of exception filter support method decide for handling exception
+        return excetpions.equals(TestCustomException.class);
+    }
+
+    @Override
+    public <T extends RuntimeException> void onException(HttpContext context, T e) {
+        //handle your custom exception
+        context.ActionContext.ActionResult= new BadRequestResult(e.getLocalizedMessage());
+    }
+}
+ ```
+
+> Exception fitler can be Configure globally in Startup Class in configureServices method .
+where we can register the Custom Exception fitler with MvcConfigurer using options.addExceptionFilter(..).  
+
+```
+public class AppStartup implements IStartup {
+
+    //Register your service with IOC Container
+   
+    @Override
+    public void configureServices(IServiceCollection service) {
+       
+        //configuring mvc options
+        MvcConfigurer.configureMvc(service,options->{
+
+          
+            //Adding your Custom Exception Filters
+            options.addExceptionFilter(TestExceptionFilter.class);
+          
+         
+
+        });
+        
+
+
+    }
+    ...
+```
+
+#### Result Filter
+
+Result filter can be excecuted just before writing the response . at this stage you can change the result fromthe action method at all .
+
+We can define the Result filter by implemeting IResultExecutionFilter
+
+```
+public class TestResultFilter implements IResultExecutionFilter {
+    @Override
+    public void beforeResultExecute(HttpContext httpContext) {
+
+        System.out.println("TestResultFilter:executed");
+        //writing custom Header for
+        httpContext.getResponse().addHeader("Framwork-Name","Minicore");
+        httpContext.getResponse().addHeader("Developer","Priyanshu Parate");
+
+    }
+}
+```
+
+We can appply the Result Filter at global level and Action Level 
+
+1. Global level 
+Global result fitler will excecute for every action 
+We can register the Custom Result filter with MvcConfigurer using options.addResultFilter() 
+```
+
+public class AppStartup implements IStartup {
+
+    //Register your service with IOC Container
+    @Override
+    public void configureServices(IServiceCollection service) {
+        //configuring mvc options
+        MvcConfigurer.configureMvc(service, options -> {
+           
+            // Adding your custom Global Result filters
+            // Global filter will execute for every action before writing the response
+            options.addResultFilter(TestResultFilter.class);
+
+        });
+        ...
+
+    }
+
+```
+
+2. Action level
+You can apply Result fitler for specific action using @ResultFilter
+
+```
+   @Get
+    @ActionFilter(filterClass = TestActionFilter.class)
+    //apply custom filter for specific action
+    @ResultFilter(filterClass = CustomResultFilter.class)
+    public List<Model> get() {
+      Integer value=  iConfiguration.getValue(Integer.class,"age");
+        System.out.println("value from Conguraton age:"+value);
+        //accesing transaiton id which is added by transactionIdMiddlware
+        System.out.println(httpContext.getData().get("trazId"));
+        return this.testService.getlist();
+
+    }
+```
+
 
 ### Formatters
+
 
 > comminig soon ..
 
