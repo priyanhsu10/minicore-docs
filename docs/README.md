@@ -28,12 +28,12 @@
 ## Minicore Architecture flow
 
 > comminig soon ..
-> ![The San Juan Mountains are beautiful!](/assets/Arcflow.png "Archeture diamgram")
+> ![The San Juan Mountains are beautiful!](/assets/arcflow.png "Archeture diamgram")
 
 ### Program Class
 
 
-```
+```javascript
 public class Program {
     public static void main(String[] args) {
        WebHostBuilder.build(args)
@@ -43,13 +43,13 @@ public class Program {
 
 //                       option.addPropertyFile("CustomFile.properties");
 
-------------------------*-Need to be implemented-----*--------------
+//------------------------*-Need to be implemented-----*--------------
                            //add your custom json file 
 //                       option.addJsonFile("CustomjsonFile.json");
                         
                         //add your custom xml file
 //                       option.addXmlFile("CustomxmlFile.xml");
-------------------------*-Need to be implemented------*-------------
+//------------------------*-Need to be implemented------*-------------
                })
 
                .useStartup(AppStartup.class)
@@ -64,7 +64,7 @@ public class Program {
 
 ### AppStartup Class
 
-```
+```javascript
 public class AppStartup implements IStartup {
 
     //Register your service with IOC Container
@@ -118,7 +118,7 @@ public class AppStartup implements IStartup {
 
 
 > In startup class pipeline can be cofnigre in configure method ..
-```
+```javascript
 public class AppStartup implements IStartup {
 
    ...
@@ -149,7 +149,7 @@ public class AppStartup implements IStartup {
 > You can create the controller by extending the controllerBase class
 
 
-```
+```javascript
 
 @Route(path = "/hello") --> @Route Annoation setut the base route for Controller
 @ActionFilter(filterClass = TestActionFilter2.class) ---> Controller Level Action filter . this is exectuted On every action execution in the controller
@@ -228,7 +228,7 @@ public class HelloController  extends ControllerBase {
 4. Envronment variables entries
 5.Command line Aguments -m_{propertykey}=value
 
-```
+```javascript
 public class Program {
     public static void main(String[] args) {
        WebHostBuilder.build(args)
@@ -267,7 +267,7 @@ public class Program {
 3. Transient
 
 > IServiceCollection  interface is provide the functionality to resole the and register the types to IOC container ..
-```
+```javascript
 
 public class AppStartup implements IStartup {
 
@@ -319,7 +319,7 @@ public class HelloController  extends ControllerBase {
 
 > custom Model biding Model
 
-```
+```javascript
 @Post(path = "/m2")
     //Custom ModelBiding
     public Model post( Model2 model){
@@ -380,7 +380,7 @@ public class Model2 {
 
  Execution of Pipeline can be short circuited if you set the result field
 
- ```
+```javascript
  public class TestActionFilter implements IActionFilter {
 
     //execute method before action call
@@ -416,7 +416,7 @@ We can configure the Filter on Three level
 Global filter will excetute against every action .
 Global filter can be register in the Startup class ConfigureServices method
 
-```
+```javascript
 
 public class AppStartup implements IStartup {
 
@@ -447,7 +447,7 @@ like @ActionFilter(filterClass = TestActionFilter2.class)
 
 Filter will be excecute on every action of controller class
 
-```
+```javascript
 @Route(path = "/hello") --> @Route Annoation setut the base route for Controller
 @ActionFilter(filterClass = TestActionFilter2.class) ---> Controller Level Action filter . this is exectuted On every action execution in the controller
 public class HelloController  extends ControllerBase {
@@ -466,7 +466,8 @@ public class HelloController  extends ControllerBase {
 Action Level Filter can ye use same as contoller level filter . we have to apply the annotation on Action in place of Controller class
 
 You can apply multiple filter as well the order of execution as per you apply 
-```
+
+```javascript
 @Get       //-->  Using @Get attribute can specify Get Method 
     @ActionFilter(filterClass = TestActionFilter.class) --> //apply custom filter for specific action
    
@@ -510,7 +511,7 @@ You can apply multiple filter as well the order of execution as per you apply
 > Exception fitler can be Configure globally in Startup Class in configureServices method .
 where we can register the Custom Exception fitler with MvcConfigurer using options.addExceptionFilter(..).  
 
-```
+```javascript
 public class AppStartup implements IStartup {
 
     //Register your service with IOC Container
@@ -541,7 +542,7 @@ Result filter can be excecuted just before writing the response . at this stage 
 
 We can define the Result filter by implemeting IResultExecutionFilter
 
-```
+```javascript
 public class TestResultFilter implements IResultExecutionFilter {
     @Override
     public void beforeResultExecute(HttpContext httpContext) {
@@ -561,7 +562,7 @@ We can appply the Result Filter at global level and Action Level
 Global result fitler will excecute for every action 
 We can register the Custom Result filter with MvcConfigurer using options.addResultFilter() 
 
-```
+```javascript
 
 public class AppStartup implements IStartup {
 
@@ -585,7 +586,7 @@ public class AppStartup implements IStartup {
 2. Action level
 You can apply Result fitler for specific action using @ResultFilter
 
-```
+```javascript
    @Get
     @ActionFilter(filterClass = TestActionFilter.class)
     //apply custom filter for specific action
